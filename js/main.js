@@ -1,79 +1,105 @@
 'use strict';
 
 {
-  const images = [
-    'img/pic00.jpg',
-    'img/pic01.jpg',
-    'img/pic02.jpg',
-    'img/pic03.jpg',
-    'img/pic04.jpg',
-    'img/pic05.jpg',
-    'img/pic06.jpg',
-  ];
+  class Panel {
+    constructor() {
+      const section = document.createElement('section');
+      section.classList.add('panel');
 
-  let currentIndex = 0;
+      this.img = document.createElement('img');
+      this.img.src = this.getRandomImage();
 
-  const mainImage = document.getElementById('main');
-  mainImage.src = images[currentIndex];
+      this.timeoutId = undefined;
 
-  images.forEach((image, index) => {
-    const img = document.createElement('img');
-    img.src = image;
+      this.stop = document.createElement('div');
+      this.stop.textContent = 'STOP';
+      this.stop.classList.add('stop', 'inactive');
+      this.stop.addEventListener('click', ()=> {
+        if(this.stop.classList.contains('inactive')) {
+          return;
+        }
+        this.stop.classList.add('inactive');
+        clearTimeout(this.timeoutId);
 
-    const li = document.createElement('li');
-    if (index === currentIndex) {
-      li.classList.add('current');
+        panelsLeft--;
+
+        if(panelsLeft === 0) {
+          spin.classList.remove('inactive');
+          panelsLeft = 3;
+          checkResult();
+        }
+      });
+
+      section.appendChild(this.img);
+      section.appendChild(this.stop);
+
+      const main = document.querySelector('main');
+      main.appendChild(section);
     }
-    li.addEventListener('click', () => {
-      mainImage.src = image;
-      const thumbnails = document.querySelectorAll('.thumbnails > li');
-      thumbnails[currentIndex].classList.remove('current');
-      currentIndex = index;
-      thumbnails[currentIndex].classList.add('current');
-    });
 
-    li.appendChild(img);
-    document.querySelector('.thumbnails').appendChild(li);
-  });
-
-  const next = document.getElementById('next');
-  next.addEventListener('click', () => {
-    let target = currentIndex + 1;
-    if(target === images.length) {
-      target = 0;
+    getRandomImage() {
+      const images = [
+        'img/seven.png',
+        'img/bell.png',
+        'img/cherry.png',
+      ];
+      return images[Math.floor(Math.random() * images.length)];
     }
-    document.querySelectorAll('.thumbnails > li')[target].click();
-  });
 
-  const prev = document.getElementById('prev');
-  prev.addEventListener('click', () => {
-    let target = currentIndex - 1;
-    if(target < 0) {
-      target = images.length - 1;
+    spin() {
+      this.img.src = this.getRandomImage();
+      this.timeoutId = setTimeout(() => {
+        this.spin();
+      }, 50);
     }
-    document.querySelectorAll('.thumbnails > li')[target].click();
-  });
 
-  let timeoutId;
+    isUnmatched(p1, p2) {
+      if(this.img.src !== p1.img.src && this.img.src !== p2.img.src) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-  function playSlideshow() {
-    timeoutId = setTimeout(() => {
-      next.click();
-      playSlideshow();
-    }, 1000);
+    unmatch() {
+      this.img.classList.add('unmatched');
+    }
+
+    activate() {
+      this.img.classList.remove('unmatched');
+      this.stop.classList.remove('inactive');
+    }
   }
 
-  let isPlaying = false;
-
-  const play = document.getElementById('play');
-  play.addEventListener('click', ()=> {
-    if (isPlaying === false) {
-      playSlideshow();
-      play.textContent = 'Pause';
-    } else {
-      clearTimeout(timeoutId);
-      play.textContent = 'Play';
+  function checkResult() {
+    if(panels[0].isUnmatched(panels[1], panels[2])) {
+      panels[0].unmatch();
     }
-    isPlaying = !isPlaying;
+    if(panels[1].isUnmatched(panels[0], panels[2])) {
+      panels[1].unmatch();
+    }
+    if(panels[2].isUnmatched(panels[0], panels[1])) {
+      panels[2].unmatch();
+    }
+  }
+
+  const panels = [
+    new Panel(),
+    new Panel(),
+    new Panel(),
+  ];
+
+  let panelsLeft = 3;
+
+  const spin = document.getElementById('spin');
+  spin.addEventListener('click', () => {
+    if(spin.classList.contains('inactive')) {
+      return;
+    }
+    spin.classList.add('inactive');
+    panels.forEach(panel => {
+      panel.activate();
+      panel.spin();
+    });
   });
 }
