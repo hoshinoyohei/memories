@@ -67,19 +67,12 @@ main {
   bottom: 0;
   z-index: -1;
   text-align: center;
-  padding-top: 16px;
-  transition: transform 1s;
 }
 
 #big > img {
-  width: 400px;
-  height: 400px;
+  width: 350px;
+  height: 350px;
   border-radius: 40px;
-  transform: translateY(-500px);
-}
-
-#big > img.sol {
-  transform: translateY(0);
 }
 
 #big.small {

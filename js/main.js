@@ -33,7 +33,6 @@
           const big = document.getElementById('big');
           big.classList.add('small');
           const img = document.createElement('img');
-          img.classList.add('sol');
           img.src = "img/sumiko.png";
           big.appendChild(img);
         }
