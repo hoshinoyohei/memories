@@ -35,6 +35,7 @@
           const img = document.createElement('img');
           img.src = "img/sumiko.png";
           big.appendChild(img);
+          spin.classList.add('small');
         }
       });
 
@@ -113,6 +114,7 @@
       return;
     }
     big = 0;
+    spin.classList.remove('small');
     spin.classList.add('inactive');
     panels.forEach(panel => {
       panel.activate();
