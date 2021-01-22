@@ -28,6 +28,15 @@
           panelsLeft = 3;
           checkResult();
         }
+
+        if(big === 3) {
+          const big = document.getElementById('big');
+          big.classList.add('small');
+          const img = document.createElement('img');
+          img.classList.add('sol');
+          img.src = "img/sumiko.png";
+          big.appendChild(img);
+        }
       });
 
       section.appendChild(this.img);
@@ -74,14 +83,22 @@
   function checkResult() {
     if(panels[0].isUnmatched(panels[1], panels[2])) {
       panels[0].unmatch();
+    } else {
+      big++;
     }
     if(panels[1].isUnmatched(panels[0], panels[2])) {
       panels[1].unmatch();
+    } else {
+      big++;
     }
     if(panels[2].isUnmatched(panels[0], panels[1])) {
       panels[2].unmatch();
+    } else {
+      big++;
     }
   }
+
+  let big = 0;
 
   const panels = [
     new Panel(),
@@ -96,6 +113,7 @@
     if(spin.classList.contains('inactive')) {
       return;
     }
+    big = 0;
     spin.classList.add('inactive');
     panels.forEach(panel => {
       panel.activate();
